@@ -1,0 +1,21 @@
+language = "go"
+run = "go run examples/alipay_channel/alipay_channel.go"
+
+[nix]
+channel = "stable-22_11"
+
+[env]
+GOOS = "linux"
+GOARCH = "amd64"
+CGO_ENABLED = "1"
+
+[packager]
+language = "go"
+
+[packager.features]
+packageSearch = true
+guessImports = true
+
+[languages.go]
+pattern = "**/*.go"
+syntax = "go"

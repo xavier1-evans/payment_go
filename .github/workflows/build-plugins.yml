@@ -1,0 +1,78 @@
+name: Build Payment Channel Plugins
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'examples/**/*.go'
+      - 'pkg/**/*.go'
+      - 'go.mod'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Build Alipay Plugin (Linux)
+      run: |
+        cd examples/alipay_channel
+        go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_linux.so alipay_channel.go
+        ls -la *.so
+    
+    - name: Upload Linux Plugin
+      uses: actions/upload-artifact@v3
+      with:
+        name: alipay-channel-linux
+        path: examples/alipay_channel/alipay_channel_linux.so
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Build Alipay Plugin (macOS)
+      run: |
+        cd examples/alipay_channel
+        go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_darwin.so alipay_channel.go
+        ls -la *.so
+    
+    - name: Upload macOS Plugin
+      uses: actions/upload-artifact@v3
+      with:
+        name: alipay-channel-macos
+        path: examples/alipay_channel/alipay_channel_darwin.so
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Build Windows Static Library
+      run: |
+        cd examples/alipay_channel
+        go build -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_windows.exe alipay_channel.go
+        ls -la *.exe
+    
+    - name: Upload Windows Executable
+      uses: actions/upload-artifact@v3
+      with:
+        name: alipay-channel-windows
+        path: examples/alipay_channel/alipay_channel_windows.exe
