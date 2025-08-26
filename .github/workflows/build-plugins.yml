@@ -25,7 +25,7 @@ jobs:
         ls -la *.so
     
     - name: Upload Linux Plugin
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: alipay-channel-linux
         path: examples/alipay_channel/alipay_channel_linux.so
@@ -47,7 +47,7 @@ jobs:
         ls -la *.so
     
     - name: Upload macOS Plugin
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: alipay-channel-macos
         path: examples/alipay_channel/alipay_channel_darwin.so
@@ -69,7 +69,7 @@ jobs:
         ls -la *.exe
     
     - name: Upload Windows Executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: alipay-channel-windows
         path: examples/alipay_channel/alipay_channel_windows.exe
