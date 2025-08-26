@@ -179,7 +179,7 @@ func (ac *AlipayChannel) CollectOrder(ctx context.Context, req *interfaces.Colle
 	ac.signRequest(alipayReq)
 
 	// Send request to Alipay
-	resp, err := ac.sendRequest(ctx, alipayReq)
+	_, err := ac.sendRequest(ctx, alipayReq)
 	if err != nil {
 		return &interfaces.CollectOrderResponse{
 			BaseResponse: interfaces.BaseResponse{
@@ -240,7 +240,7 @@ func (ac *AlipayChannel) PayoutOrder(ctx context.Context, req *interfaces.Payout
 	ac.signRequest(alipayReq)
 
 	// Send request to Alipay
-	resp, err := ac.sendRequest(ctx, alipayReq)
+	_, err := ac.sendRequest(ctx, alipayReq)
 	if err != nil {
 		return &interfaces.PayoutOrderResponse{
 			BaseResponse: interfaces.BaseResponse{
