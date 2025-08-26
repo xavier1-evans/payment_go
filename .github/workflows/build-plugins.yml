@@ -3,12 +3,9 @@ name: Build Payment Channel Plugins
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'examples/**/*.go'
-      - 'pkg/**/*.go'
-      - 'go.mod'
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-linux:
