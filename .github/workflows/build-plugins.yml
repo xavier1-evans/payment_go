@@ -1,5 +1,6 @@
 name: Build Payment Channel Plugins
 
+# Trigger new build to include Ultra-Minimal version
 on:
   push:
     branches: [ main ]
