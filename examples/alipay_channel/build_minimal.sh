@@ -10,9 +10,9 @@ export CGO_ENABLED=1
 
 echo "📦 Using minimal build flags..."
 
-# Build minimal version with aggressive optimization
+# Build minimal version with aggressive optimization (without static linking)
 go build -buildmode=plugin \
-  -ldflags="-s -w -extldflags=-static" \
+  -ldflags="-s -w" \
   -gcflags="-l=4 -B -N" \
   -trimpath \
   -o alipay_channel_minimal.so \
@@ -37,7 +37,7 @@ if [ -f "alipay_channel_minimal.so" ]; then
         echo "   • Unused encoding packages"
     else
         echo "⚠️  File size is still over 3MB."
-        echo "💡 Try building with CGO_ENABLED=0 for even smaller size"
+        echo "💡 Trying with CGO_ENABLED=0 for even smaller size"
         
         # Try without CGO
         export CGO_ENABLED=0

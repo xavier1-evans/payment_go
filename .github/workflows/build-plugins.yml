@@ -18,17 +18,29 @@ jobs:
       with:
         go-version: '1.21'
     
-    - name: Build Alipay Plugin (Linux) - Minimal Version
+    - name: Build Alipay Plugin (Linux) - All Versions
       run: |
         cd examples/alipay_channel
+        
+        echo "=== Building Full Version ==="
         go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_linux.so alipay_channel.go
         echo "Full version size:"
         ls -la alipay_channel_linux.so
         
-        echo "Building minimal version..."
-        go build -buildmode=plugin -ldflags="-s -w -extldflags=-static" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_minimal_linux.so alipay_channel_minimal.go
+        echo "=== Building Minimal Version ==="
+        go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_minimal_linux.so alipay_channel_minimal.go
         echo "Minimal version size:"
         ls -la alipay_channel_minimal_linux.so
+        
+        echo "=== Building Ultra-Minimal Version ==="
+        go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_ultra_minimal_linux.so alipay_channel_ultra_minimal.go
+        echo "Ultra-minimal version size:"
+        ls -la alipay_channel_ultra_minimal_linux.so
+        
+        echo "=== Size Comparison ==="
+        echo "Full: $(du -h alipay_channel_linux.so | cut -f1)"
+        echo "Minimal: $(du -h alipay_channel_minimal_linux.so | cut -f1)"
+        echo "Ultra-Minimal: $(du -h alipay_channel_ultra_minimal_linux.so | cut -f1)"
     
     - name: Upload Linux Plugins
       uses: actions/upload-artifact@v4
@@ -46,17 +58,29 @@ jobs:
       with:
         go-version: '1.21'
     
-    - name: Build Alipay Plugin (macOS) - Minimal Version
+    - name: Build Alipay Plugin (macOS) - All Versions
       run: |
         cd examples/alipay_channel
+        
+        echo "=== Building Full Version ==="
         go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_darwin.so alipay_channel.go
         echo "Full version size:"
         ls -la alipay_channel_darwin.so
         
-        echo "Building minimal version..."
+        echo "=== Building Minimal Version ==="
         go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_minimal_darwin.so alipay_channel_minimal.go
         echo "Minimal version size:"
         ls -la alipay_channel_minimal_darwin.so
+        
+        echo "=== Building Ultra-Minimal Version ==="
+        go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_ultra_minimal_darwin.so alipay_channel_ultra_minimal.go
+        echo "Ultra-minimal version size:"
+        ls -la alipay_channel_ultra_minimal_darwin.so
+        
+        echo "=== Size Comparison ==="
+        echo "Full: $(du -h alipay_channel_darwin.so | cut -f1)"
+        echo "Minimal: $(du -h alipay_channel_minimal_darwin.so | cut -f1)"
+        echo "Ultra-Minimal: $(du -h alipay_channel_ultra_minimal_darwin.so | cut -f1)"
     
     - name: Upload macOS Plugins
       uses: actions/upload-artifact@v4
@@ -74,17 +98,29 @@ jobs:
       with:
         go-version: '1.21'
     
-    - name: Build Windows Static Library
+    - name: Build Windows Executables - All Versions
       run: |
         cd examples/alipay_channel
+        
+        echo "=== Building Full Version ==="
         go build -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_windows.exe alipay_channel.go
         echo "Full version size:"
         ls -la alipay_channel_windows.exe
         
-        echo "Building minimal version..."
+        echo "=== Building Minimal Version ==="
         go build -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_minimal_windows.exe alipay_channel_minimal.go
         echo "Minimal version size:"
         ls -la alipay_channel_minimal_windows.exe
+        
+        echo "=== Building Ultra-Minimal Version ==="
+        go build -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_ultra_minimal_windows.exe alipay_channel_ultra_minimal.go
+        echo "Ultra-minimal version size:"
+        ls -la alipay_channel_ultra_minimal_windows.exe
+        
+        echo "=== Size Comparison ==="
+        echo "Full: $(Get-ChildItem alipay_channel_windows.exe | ForEach-Object { [math]::Round($_.Length/1MB, 2) }) MB"
+        echo "Minimal: $(Get-ChildItem alipay_channel_minimal_windows.exe | ForEach-Object { [math]::Round($_.Length/1MB, 2) }) MB"
+        echo "Ultra-Minimal: $(Get-ChildItem alipay_channel_ultra_minimal_windows.exe | ForEach-Object { [math]::Round($_.Length/1MB, 2) }) MB"
     
     - name: Upload Windows Executables
       uses: actions/upload-artifact@v4
