@@ -1,14 +1,14 @@
-name: Build Ultra-Minimal Plugin Only
+name: Build Absolute Minimal Plugin Only
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'examples/alipay_channel/alipay_channel_ultra_minimal.go'
+      - 'examples/alipay_channel/alipay_channel_absolute_minimal.go'
   workflow_dispatch:
 
 jobs:
-  build-ultra-minimal:
+  build-absolute-minimal:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -18,31 +18,33 @@ jobs:
       with:
         go-version: '1.21'
     
-    - name: Build Ultra-Minimal Plugin
+    - name: Build Absolute Minimal Plugin
       run: |
         cd examples/alipay_channel
         
-        echo "=== Building Ultra-Minimal Version Only ==="
-        echo "Source file: alipay_channel_ultra_minimal.go"
-        ls -la alipay_channel_ultra_minimal.go
+        echo "=== Building Absolute Minimal Version Only ==="
+        echo "Source file: alipay_channel_absolute_minimal.go"
+        ls -la alipay_channel_absolute_minimal.go
         
-        echo "Building with size optimization..."
+        echo "Building with maximum size optimization..."
         go build -buildmode=plugin \
           -ldflags="-s -w" \
           -gcflags="-l=4 -B -N" \
           -trimpath \
-          -o alipay_channel_ultra_minimal_linux.so \
-          alipay_channel_ultra_minimal.go
+          -a \
+          -installsuffix absolute_minimal \
+          -o alipay_channel_absolute_minimal_linux.so \
+          alipay_channel_absolute_minimal.go
         
         echo "=== Build Result ==="
-        if [ -f "alipay_channel_ultra_minimal_linux.so" ]; then
+        if [ -f "alipay_channel_absolute_minimal_linux.so" ]; then
             echo "✅ Build successful!"
-            echo "File: alipay_channel_ultra_minimal_linux.so"
-            echo "Size: $(du -h alipay_channel_ultra_minimal_linux.so | cut -f1)"
-            echo "Size (bytes): $(stat -c%s alipay_channel_ultra_minimal_linux.so)"
+            echo "File: alipay_channel_absolute_minimal_linux.so"
+            echo "Size: $(du -h alipay_channel_absolute_minimal_linux.so | cut -f1)"
+            echo "Size (bytes): $(stat -c%s alipay_channel_absolute_minimal_linux.so)"
             
             # Check if under 3MB
-            SIZE_BYTES=$(stat -c%s alipay_channel_ultra_minimal_linux.so)
+            SIZE_BYTES=$(stat -c%s alipay_channel_absolute_minimal_linux.so)
             if [ "$SIZE_BYTES" -lt 3145728 ]; then
                 echo "🎯 SUCCESS: File size is under 3MB!"
             else
@@ -51,13 +53,13 @@ jobs:
         else
             echo "❌ Build failed!"
             echo "Checking for errors..."
-            go build -buildmode=plugin alipay_channel_ultra_minimal.go 2>&1
+            go build -buildmode=plugin alipay_channel_absolute_minimal.go 2>&1
         fi
     
-    - name: Upload Ultra-Minimal Plugin
+    - name: Upload Absolute Minimal Plugin
       uses: actions/upload-artifact@v4
       with:
-        name: ultra-minimal-plugin
-        path: examples/alipay_channel/alipay_channel_ultra_minimal_linux.so
+        name: absolute-minimal-plugin
+        path: examples/alipay_channel/alipay_channel_absolute_minimal_linux.so
 
-# TRIGGER: Building Ultra-Minimal plugin now!
+# TRIGGER: Building Absolute Minimal plugin now!
