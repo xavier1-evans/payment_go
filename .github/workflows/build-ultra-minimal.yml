@@ -59,3 +59,5 @@ jobs:
       with:
         name: ultra-minimal-plugin
         path: examples/alipay_channel/alipay_channel_ultra_minimal_linux.so
+
+# TRIGGER: Building Ultra-Minimal plugin now!
