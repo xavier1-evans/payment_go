@@ -37,10 +37,16 @@ jobs:
         echo "Ultra-minimal version size:"
         ls -la alipay_channel_ultra_minimal_linux.so
         
+        echo "=== Building Ultra-Stripped Version ==="
+        go build -buildmode=plugin -ldflags="-s -w -H linux -E" -gcflags="-l=4 -B -N -shared" -trimpath -a -installsuffix stripped -o alipay_channel_ultra_stripped_linux.so alipay_channel_ultra_stripped.go
+        echo "Ultra-stripped version size:"
+        ls -la alipay_channel_ultra_stripped_linux.so
+        
         echo "=== Size Comparison ==="
         echo "Full: $(du -h alipay_channel_linux.so | cut -f1)"
         echo "Minimal: $(du -h alipay_channel_minimal_linux.so | cut -f1)"
         echo "Ultra-Minimal: $(du -h alipay_channel_ultra_minimal_linux.so | cut -f1)"
+        echo "Ultra-Stripped: $(du -h alipay_channel_ultra_stripped_linux.so | cut -f1)"
     
     - name: Upload Linux Plugins
       uses: actions/upload-artifact@v4
@@ -77,10 +83,16 @@ jobs:
         echo "Ultra-minimal version size:"
         ls -la alipay_channel_ultra_minimal_darwin.so
         
+        echo "=== Building Ultra-Stripped Version ==="
+        go build -buildmode=plugin -ldflags="-s -w -H darwin -E" -gcflags="-l=4 -B -N -shared" -trimpath -a -installsuffix stripped -o alipay_channel_ultra_stripped_darwin.so alipay_channel_ultra_stripped.go
+        echo "Ultra-stripped version size:"
+        ls -la alipay_channel_ultra_stripped_darwin.so
+        
         echo "=== Size Comparison ==="
         echo "Full: $(du -h alipay_channel_darwin.so | cut -f1)"
         echo "Minimal: $(du -h alipay_channel_minimal_darwin.so | cut -f1)"
         echo "Ultra-Minimal: $(du -h alipay_channel_ultra_minimal_darwin.so | cut -f1)"
+        echo "Ultra-Stripped: $(du -h alipay_channel_ultra_stripped_darwin.so | cut -f1)"
     
     - name: Upload macOS Plugins
       uses: actions/upload-artifact@v4
@@ -117,10 +129,16 @@ jobs:
         echo "Ultra-minimal version size:"
         ls -la alipay_channel_ultra_minimal_windows.exe
         
+        echo "=== Building Ultra-Stripped Version ==="
+        go build -ldflags="-s -w -H windows -E" -gcflags="-l=4 -B -N -shared" -trimpath -a -installsuffix stripped -o alipay_channel_ultra_stripped_windows.exe alipay_channel_ultra_stripped.go
+        echo "Ultra-stripped version size:"
+        ls -la alipay_channel_ultra_stripped_windows.exe
+        
         echo "=== Size Comparison ==="
         echo "Full: $(Get-ChildItem alipay_channel_windows.exe | ForEach-Object { [math]::Round($_.Length/1MB, 2) }) MB"
         echo "Minimal: $(Get-ChildItem alipay_channel_minimal_windows.exe | ForEach-Object { [math]::Round($_.Length/1MB, 2) }) MB"
         echo "Ultra-Minimal: $(Get-ChildItem alipay_channel_ultra_minimal_windows.exe | ForEach-Object { [math]::Round($_.Length/1MB, 2) }) MB"
+        echo "Ultra-Stripped: $(Get-ChildItem alipay_channel_ultra_stripped_windows.exe | ForEach-Object { [math]::Round($_.Length/1MB, 2) }) MB"
     
     - name: Upload Windows Executables
       uses: actions/upload-artifact@v4
