@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"time"
 
 	"payment_go/pkg/interfaces"
@@ -74,7 +75,7 @@ func (ac *AlipayChannelUltraStripped) ValidateConfig(config map[string]interface
 }
 
 // CollectOrder creates an ultra-stripped Alipay collection order
-func (ac *AlipayChannelUltraStripped) CollectOrder(ctx interface{}, req *interfaces.CollectOrderRequest) (*interfaces.CollectOrderResponse, error) {
+func (ac *AlipayChannelUltraStripped) CollectOrder(ctx context.Context, req *interfaces.CollectOrderRequest) (*interfaces.CollectOrderResponse, error) {
 	channelOrderID := "ALIPAY_" + req.OrderID
 	paymentURL := "https://openapi.alipay.com/gateway.do?order_id=" + req.OrderID
 	
@@ -96,7 +97,7 @@ func (ac *AlipayChannelUltraStripped) CollectOrder(ctx interface{}, req *interfa
 }
 
 // PayoutOrder creates an ultra-stripped Alipay payout order
-func (ac *AlipayChannelUltraStripped) PayoutOrder(ctx interface{}, req *interfaces.PayoutOrderRequest) (*interfaces.PayoutOrderResponse, error) {
+func (ac *AlipayChannelUltraStripped) PayoutOrder(ctx context.Context, req *interfaces.PayoutOrderRequest) (*interfaces.PayoutOrderResponse, error) {
 	channelOrderID := "ALIPAY_PAYOUT_" + req.OrderID
 	
 	return &interfaces.PayoutOrderResponse{
@@ -116,7 +117,7 @@ func (ac *AlipayChannelUltraStripped) PayoutOrder(ctx interface{}, req *interfac
 }
 
 // CollectQuery queries an ultra-stripped Alipay collection order
-func (ac *AlipayChannelUltraStripped) CollectQuery(ctx interface{}, req *interfaces.CollectQueryRequest) (*interfaces.CollectQueryResponse, error) {
+func (ac *AlipayChannelUltraStripped) CollectQuery(ctx context.Context, req *interfaces.CollectQueryRequest) (*interfaces.CollectQueryResponse, error) {
 	channelOrderID := "ALIPAY_" + req.OrderID
 	
 	return &interfaces.CollectQueryResponse{
@@ -136,7 +137,7 @@ func (ac *AlipayChannelUltraStripped) CollectQuery(ctx interface{}, req *interfa
 }
 
 // PayoutQuery queries an ultra-stripped Alipay payout order
-func (ac *AlipayChannelUltraStripped) PayoutQuery(ctx interface{}, req *interfaces.PayoutQueryRequest) (*interfaces.PayoutQueryResponse, error) {
+func (ac *AlipayChannelUltraStripped) PayoutQuery(ctx context.Context, req *interfaces.PayoutQueryRequest) (*interfaces.PayoutQueryResponse, error) {
 	channelOrderID := "ALIPAY_PAYOUT_" + req.OrderID
 	
 	return &interfaces.PayoutQueryResponse{
@@ -156,7 +157,7 @@ func (ac *AlipayChannelUltraStripped) PayoutQuery(ctx interface{}, req *interfac
 }
 
 // BalanceInquiry performs ultra-stripped balance inquiry
-func (ac *AlipayChannelUltraStripped) BalanceInquiry(ctx interface{}, req *interfaces.BalanceInquiryRequest) (*interfaces.BalanceInquiryResponse, error) {
+func (ac *AlipayChannelUltraStripped) BalanceInquiry(ctx context.Context, req *interfaces.BalanceInquiryRequest) (*interfaces.BalanceInquiryResponse, error) {
 	return &interfaces.BalanceInquiryResponse{
 		BaseResponse: interfaces.BaseResponse{
 			Success:   true,
@@ -173,7 +174,7 @@ func (ac *AlipayChannelUltraStripped) BalanceInquiry(ctx interface{}, req *inter
 }
 
 // Callback handles ultra-stripped Alipay callbacks
-func (ac *AlipayChannelUltraStripped) Callback(ctx interface{}, req *interfaces.CallbackRequest) (*interfaces.CallbackResponse, error) {
+func (ac *AlipayChannelUltraStripped) Callback(ctx context.Context, req *interfaces.CallbackRequest) (*interfaces.CallbackResponse, error) {
 	return &interfaces.CallbackResponse{
 		BaseResponse: interfaces.BaseResponse{
 			Success:   true,
