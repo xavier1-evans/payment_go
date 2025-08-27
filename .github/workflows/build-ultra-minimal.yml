@@ -1,0 +1,61 @@
+name: Build Ultra-Minimal Plugin Only
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'examples/alipay_channel/alipay_channel_ultra_minimal.go'
+  workflow_dispatch:
+
+jobs:
+  build-ultra-minimal:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Build Ultra-Minimal Plugin
+      run: |
+        cd examples/alipay_channel
+        
+        echo "=== Building Ultra-Minimal Version Only ==="
+        echo "Source file: alipay_channel_ultra_minimal.go"
+        ls -la alipay_channel_ultra_minimal.go
+        
+        echo "Building with size optimization..."
+        go build -buildmode=plugin \
+          -ldflags="-s -w" \
+          -gcflags="-l=4 -B -N" \
+          -trimpath \
+          -o alipay_channel_ultra_minimal_linux.so \
+          alipay_channel_ultra_minimal.go
+        
+        echo "=== Build Result ==="
+        if [ -f "alipay_channel_ultra_minimal_linux.so" ]; then
+            echo "✅ Build successful!"
+            echo "File: alipay_channel_ultra_minimal_linux.so"
+            echo "Size: $(du -h alipay_channel_ultra_minimal_linux.so | cut -f1)"
+            echo "Size (bytes): $(stat -c%s alipay_channel_ultra_minimal_linux.so)"
+            
+            # Check if under 3MB
+            SIZE_BYTES=$(stat -c%s alipay_channel_ultra_minimal_linux.so)
+            if [ "$SIZE_BYTES" -lt 3145728 ]; then
+                echo "🎯 SUCCESS: File size is under 3MB!"
+            else
+                echo "⚠️  File size is over 3MB"
+            fi
+        else
+            echo "❌ Build failed!"
+            echo "Checking for errors..."
+            go build -buildmode=plugin alipay_channel_ultra_minimal.go 2>&1
+        fi
+    
+    - name: Upload Ultra-Minimal Plugin
+      uses: actions/upload-artifact@v4
+      with:
+        name: ultra-minimal-plugin
+        path: examples/alipay_channel/alipay_channel_ultra_minimal_linux.so
