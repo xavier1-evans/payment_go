@@ -1,87 +1,51 @@
 #!/bin/bash
+# Ultra-minimal build script to reduce .so file size to under 3MB
 
-# Ultra-Minimal Build Script for Smallest Possible .so File Sizes
-# This script uses the most aggressive optimization techniques
+echo "🔧 Building ultra-minimal Alipay plugin..."
 
-set -e
+# Set environment variables for minimal build
+export GOOS=linux
+export GOARCH=amd64
+export CGO_ENABLED=1
 
-echo "🚀 Building Alipay Channel Plugin (Ultra-Minimal Size)"
-echo "======================================================"
+# Ultra-aggressive optimization flags
+echo "📦 Using ultra-minimal build flags..."
 
-# Create output directory
-mkdir -p output
+go build -buildmode=plugin \
+  -ldflags="-s -w -extldflags=-static" \
+  -gcflags="-l=4 -B -N" \
+  -trimpath \
+  -o alipay_channel_ultra_minimal.so \
+  alipay_channel.go
 
-# Ultra-optimized build for Linux (x86_64)
-echo "📦 Building for Linux (x86_64) - Ultra-optimized..."
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build \
-    -buildmode=plugin \
-    -ldflags="-s -w -extldflags=-static -H windowsgui" \
-    -gcflags="-l=4 -B -N" \
-    -trimpath \
-    -a \
-    -installsuffix cgo \
-    -o output/alipay_channel_linux_minimal.so \
-    .
-
-# Ultra-optimized build for Linux (ARM64)
-echo "📦 Building for Linux (ARM64) - Ultra-optimized..."
-GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build \
-    -buildmode=plugin \
-    -ldflags="-s -w -extldflags=-static -H windowsgui" \
-    -gcflags="-l=4 -B -N" \
-    -trimpath \
-    -a \
-    -installsuffix cgo \
-    -o output/alipay_channel_linux_arm64_minimal.so \
-    .
-
-# Ultra-optimized build for macOS (x86_64)
-echo "📦 Building for macOS (x86_64) - Ultra-optimized..."
-GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build \
-    -buildmode=plugin \
-    -ldflags="-s -w -H windowsgui" \
-    -gcflags="-l=4 -B -N" \
-    -trimpath \
-    -a \
-    -installsuffix cgo \
-    -o output/alipay_channel_darwin_minimal.so \
-    .
-
-# Ultra-optimized build for macOS (ARM64)
-echo "📦 Building for macOS (ARM64) - Ultra-optimized..."
-GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build \
-    -buildmode=plugin \
-    -ldflags="-s -w -H windowsgui" \
-    -gcflags="-l=4 -B -N" \
-    -trimpath \
-    -a \
-    -installsuffix cgo \
-    -o output/alipay_channel_darwin_arm64_minimal.so \
-    .
-
-echo ""
-echo "📊 Build Results (Ultra-Minimal File Sizes):"
-echo "============================================="
-
-# Show file sizes
-for file in output/*minimal*; do
-    if [ -f "$file" ]; then
-        size=$(du -h "$file" | cut -f1)
-        echo "   $(basename "$file"): $size"
+# Check file size
+if [ -f "alipay_channel_ultra_minimal.so" ]; then
+    echo "✅ Build successful!"
+    echo "📁 File: alipay_channel_ultra_minimal.so"
+    echo "📏 Size: $(du -h alipay_channel_ultra_minimal.so | cut -f1)"
+    
+    # Show size in bytes for comparison
+    SIZE_BYTES=$(stat -c%s alipay_channel_ultra_minimal.so 2>/dev/null || stat -f%z alipay_channel_ultra_minimal.so 2>/dev/null || echo "unknown")
+    echo "📏 Size (bytes): $SIZE_BYTES"
+    
+    if [ "$SIZE_BYTES" != "unknown" ] && [ "$SIZE_BYTES" -lt 3145728 ]; then
+        echo "🎯 SUCCESS: File size is under 3MB!"
+    else
+        echo "⚠️  File size is still over 3MB. Trying more aggressive optimization..."
+        
+        # Try even more aggressive optimization
+        go build -buildmode=plugin \
+          -ldflags="-s -w -extldflags=-static -H linux -E" \
+          -gcflags="-l=4 -B -N -shared" \
+          -trimpath \
+          -o alipay_channel_ultra_minimal_v2.so \
+          alipay_channel.go
+        
+        if [ -f "alipay_channel_ultra_minimal_v2.so" ]; then
+            SIZE_V2=$(stat -c%s alipay_channel_ultra_minimal_v2.so 2>/dev/null || stat -f%z alipay_channel_ultra_minimal_v2.so 2>/dev/null || echo "unknown")
+            echo "📏 V2 Size: $SIZE_V2 bytes"
+        fi
     fi
-done
-
-echo ""
-echo "✅ Ultra-minimal build completed successfully!"
-echo "🎯 All plugins optimized for absolute minimal size"
-echo ""
-echo "💡 Ultra-minimal optimization techniques used:"
-echo "   • CGO disabled (CGO_ENABLED=0)"
-echo "   • Strip ALL symbols (-s -w)"
-echo "   • Static linking (-extldflags=-static)"
-echo "   • Aggressive inlining (-l=4)"
-echo "   • Disable bounds checking (-B)"
-echo "   • Disable nil checks (-N)"
-echo "   • Path trimming (-trimpath)"
-echo "   • Force rebuild (-a)"
-echo "   • Minimal install suffix"
+else
+    echo "❌ Build failed!"
+fi

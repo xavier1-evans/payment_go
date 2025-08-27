@@ -18,17 +18,23 @@ jobs:
       with:
         go-version: '1.21'
     
-    - name: Build Alipay Plugin (Linux)
+    - name: Build Alipay Plugin (Linux) - Minimal Version
       run: |
         cd examples/alipay_channel
         go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_linux.so alipay_channel.go
-        ls -la *.so
+        echo "Full version size:"
+        ls -la alipay_channel_linux.so
+        
+        echo "Building minimal version..."
+        go build -buildmode=plugin -ldflags="-s -w -extldflags=-static" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_minimal_linux.so alipay_channel_minimal.go
+        echo "Minimal version size:"
+        ls -la alipay_channel_minimal_linux.so
     
-    - name: Upload Linux Plugin
+    - name: Upload Linux Plugins
       uses: actions/upload-artifact@v4
       with:
         name: alipay-channel-linux
-        path: examples/alipay_channel/alipay_channel_linux.so
+        path: examples/alipay_channel/alipay_channel_*.so
 
   build-macos:
     runs-on: macos-latest
@@ -40,17 +46,23 @@ jobs:
       with:
         go-version: '1.21'
     
-    - name: Build Alipay Plugin (macOS)
+    - name: Build Alipay Plugin (macOS) - Minimal Version
       run: |
         cd examples/alipay_channel
         go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_darwin.so alipay_channel.go
-        ls -la *.so
+        echo "Full version size:"
+        ls -la alipay_channel_darwin.so
+        
+        echo "Building minimal version..."
+        go build -buildmode=plugin -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_minimal_darwin.so alipay_channel_minimal.go
+        echo "Minimal version size:"
+        ls -la alipay_channel_minimal_darwin.so
     
-    - name: Upload macOS Plugin
+    - name: Upload macOS Plugins
       uses: actions/upload-artifact@v4
       with:
         name: alipay-channel-macos
-        path: examples/alipay_channel/alipay_channel_darwin.so
+        path: examples/alipay_channel/alipay_channel_*.so
 
   build-windows:
     runs-on: windows-latest
@@ -66,10 +78,16 @@ jobs:
       run: |
         cd examples/alipay_channel
         go build -ldflags="-s -w" -gcflags="-l=4" -trimpath -o alipay_channel_windows.exe alipay_channel.go
-        ls -la *.exe
+        echo "Full version size:"
+        ls -la alipay_channel_windows.exe
+        
+        echo "Building minimal version..."
+        go build -ldflags="-s -w" -gcflags="-l=4 -B -N" -trimpath -o alipay_channel_minimal_windows.exe alipay_channel_minimal.go
+        echo "Minimal version size:"
+        ls -la alipay_channel_minimal_windows.exe
     
-    - name: Upload Windows Executable
+    - name: Upload Windows Executables
       uses: actions/upload-artifact@v4
       with:
         name: alipay-channel-windows
-        path: examples/alipay_channel/alipay_channel_windows.exe
+        path: examples/alipay_channel/alipay_channel_*.exe
